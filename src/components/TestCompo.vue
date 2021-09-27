@@ -1,17 +1,31 @@
 <template>
   <div>
-    slot out {{ test }}
-    <slot />
+    text: {{ text }}
+  </div>
+  <div>
+    upper: {{ text.toUpperCase() }}
+  </div>
+  <div>
+    deep: <TestDeep />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
+import TestDeep from 'components/TestDeep.vue'
 
 export default defineComponent({
   name: 'TestCompo',
-  props: ['test'],
+  components: { TestDeep },
+  props: {
+    text: {
+      type: String,
+      default: () => 'abcd'
+    }
+  },
 
-  setup () {
+  setup (props) {
+    const upper = computed(() => props.text)
+    return { upper }
     //
   }
 })
