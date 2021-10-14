@@ -9,14 +9,10 @@ const content = ref('')
 const existsRule = (val: string) => (val && val.length > 0) || '내용을 쓰세요'
 
 const onSubmit = async () => {
-  try {
-    await setDoc(doc(db, 'posts', title.value), {
-      title: title.value,
-      content: content.value
-    })
-  } catch (e) {
-    console.error(e)
-  }
+  await setDoc(doc(db, 'posts', title.value), {
+    title: title.value,
+    content: content.value
+  })
 }
 
 const onReset = () => {
@@ -31,7 +27,7 @@ const onReset = () => {
     @submit="onSubmit"
     @reset="onReset"
   >
-    <v-card>
+    <q-card>
       <q-card-section>
         <q-input
           v-model="title"
@@ -67,6 +63,6 @@ const onReset = () => {
           flat
         />
       </q-card-actions>
-    </v-card>
+    </q-card>
   </q-form>
 </template>
