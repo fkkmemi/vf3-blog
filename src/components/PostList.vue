@@ -1,18 +1,13 @@
 <script setup lang="ts">
 import PostListItem from './PostListItem.vue'
-import { db } from 'boot/firebase'
-import {
-  collection, query, getDocs,
-  QueryDocumentSnapshot, DocumentData
-} from 'firebase/firestore'
+import { QueryDocumentSnapshot } from 'firebase/firestore'
 import { onMounted, ref } from 'vue'
+import { Post, getPosts } from 'src/models/Post'
 
-const items = ref<QueryDocumentSnapshot<DocumentData>[]>([])
+const items = ref<QueryDocumentSnapshot<Post>[]>([])
 
 const getData = async () => {
-  const q = query(collection(db, 'posts'))
-
-  const querySnapshot = await getDocs(q)
+  const querySnapshot = await getPosts()
   items.value = querySnapshot.docs
 }
 

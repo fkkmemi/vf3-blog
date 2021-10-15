@@ -36,3 +36,4 @@ yarn-error.log*
 firebaseConfig.js
 *.log
 .firebaserc
+/firebase-data

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { db } from 'boot/firebase'
-import { doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
+import { Post, setPost } from 'src/models/Post'
 
 const title = ref('')
 const content = ref('')
@@ -10,17 +9,13 @@ const content = ref('')
 const existsRule = (val: string) => (val && val.length > 0) || '내용을 쓰세요'
 const router = useRouter()
 const onSubmit = async () => {
-  await setDoc(doc(db, 'posts', title.value), {
-    title: title.value,
-    content: content.value
-  })
+  await setPost(new Post(title.value, content.value))
   await router.push('/list')
 }
 
 const onReset = () => {
   title.value = ''
   content.value = ''
-  //
 }
 </script>
 <template>
