@@ -94,6 +94,13 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
 
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+
+    // custom
+    'no-useless-constructor': 'off',
+
+    // temp
+    "indent": "off",
+    "@typescript-eslint/indent": ["error", 2]
   }
 }

@@ -11,7 +11,8 @@
     "dev": "quasar dev",
     "build": "quasar build",
     "build:pwa": "quasar build -m pwa",
-    "emul": "firebase emulators:start --import=./firebase-data --export-on-exit"
+    "emul": "firebase emulators:start --import=./firebase-data --export-on-exit",
+    "watch": "cd functions && yarn watch"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
