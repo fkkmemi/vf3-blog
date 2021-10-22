@@ -5,14 +5,15 @@ import {
 } from 'firebase/auth'
 
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
+import firebaseJson from '../../firebase.json'
 
-initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig)
 
 const auth = getAuth()
 auth.useDeviceLanguage()
 connectAuthEmulator(auth, 'http://localhost:9099')
 
-const db = getFirestore()
-connectFirestoreEmulator(db, 'localhost', 8081)
+const db = getFirestore(app)
+connectFirestoreEmulator(db, 'localhost', firebaseJson.emulators.firestore.port)
 
-export { auth, db }
+export { app, auth, db }
