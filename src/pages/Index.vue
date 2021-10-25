@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { } from 'vue'
+import TestRtdb from 'src/components/TestRtdb.vue';
 
 </script>
 <template>
   <q-page padding>
-    index
+    <TestRtdb />
   </q-page>
 </template>
