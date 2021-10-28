@@ -13,7 +13,9 @@ export class User {
     readonly email: string,
     readonly displayName: string,
     readonly photoURL: string,
-    readonly createdAt?: Date | undefined
+    readonly createdAt?: Date | undefined,
+    readonly online?: boolean,
+    readonly visitedAt?: Date | undefined
   ) { }
 }
 
@@ -29,7 +31,9 @@ const converter: FirestoreDataConverter<User> = {
       data.email,
       data.displayName,
       photoURL,
-      data.createdAt instanceof Timestamp ? data.createdAt.toDate() : undefined
+      data.createdAt instanceof Timestamp ? data.createdAt.toDate() : undefined,
+      data.online,
+      data.visitedAt instanceof Timestamp ? data.visitedAt.toDate() : undefined
     )
   }
 }

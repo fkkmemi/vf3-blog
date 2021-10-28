@@ -7,7 +7,8 @@ import {
   signOut
 } from 'firebase/auth'
 import { firebaseUser, useAuth } from 'src/composables/useAuth'
-useAuth()
+const { initialize } = useAuth()
+initialize()
 
 const provider = new GoogleAuthProvider()
 </script>

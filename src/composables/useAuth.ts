@@ -4,12 +4,21 @@ import {
   onAuthStateChanged,
   User
 } from 'firebase/auth'
+import { onChangeStatus, offChangeStatus } from './statusChange'
 
 export const firebaseUser = ref<User | null>(null)
 export const isSigned = computed(() => firebaseUser.value !== null)
 
 export const useAuth = () => {
-  onAuthStateChanged(auth, user => {
-    firebaseUser.value = user
-  })
+  const initialize = () => {
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        onChangeStatus(user.uid)
+      } else {
+        offChangeStatus(firebaseUser.value?.uid || '').catch(e => console.error('off err', e))
+      }
+      firebaseUser.value = user
+    })
+  }
+  return { initialize }
 }
