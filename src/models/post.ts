@@ -8,7 +8,8 @@ import {
   setDoc,
   collection, query, getDocs,
   deleteDoc,
-  serverTimestamp
+  serverTimestamp,
+  getDoc
 } from 'firebase/firestore'
 import { db } from 'boot/firebase'
 import { getUser, User } from './user'
@@ -63,8 +64,16 @@ const converter: FirestoreDataConverter<Post> = {
     )
   }
 }
+
+const titleToId = (text: string) => {
+  // eslint-disable-next-line no-useless-escape
+  const pattern = /[\{\}\[\]\/?.,;:|\)*~`!^\_+<>@\#$%&\\\=\(\'\"]/gi
+
+  return text.replace(pattern, '').split(' ').join('-')
+}
+
 export const setPost = (post: Post) => {
-  const ref = doc(db, 'posts', post.title).withConverter(converter)
+  const ref = doc(db, 'posts', titleToId(post.title)).withConverter(converter)
   return setDoc(ref, post)
 }
 const userSnapshots: DocumentSnapshot<User>[] = []
@@ -81,4 +90,9 @@ export const getPosts = async () => {
   }
 
   return sn
+}
+
+export const getPost = (id: string) => {
+  const ref = doc(db, 'posts', id).withConverter(converter)
+  return getDoc(ref)
 }
