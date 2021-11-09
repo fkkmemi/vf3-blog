@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Post, setPost } from 'src/models/post'
-import { doc } from 'firebase/firestore'
-import { db } from 'boot/firebase'
-import { firebaseUser } from 'src/composables/useAuth'
+import { setPost } from 'src/models/post'
 
 const title = ref('')
 const content = ref('')
@@ -12,9 +9,7 @@ const content = ref('')
 const existsRule = (val: string) => (val && val.length > 0) || '내용을 쓰세요'
 const router = useRouter()
 const onSubmit = async () => {
-  if (!firebaseUser.value) throw Error('user not signed')
-  const userRef = doc(db, 'users', firebaseUser.value.uid)
-  await setPost(new Post(title.value, content.value, userRef))
+  await setPost(title.value, content.value)
   await router.push('/list')
 }
 

@@ -14,8 +14,8 @@ const post = ref<Post | null>()
 
 onMounted(() => {
   return getPost(props.id)
-    .then(sn => {
-      post.value = sn.data()
+    .then(data => {
+      post.value = data
     })
 })
 
@@ -23,10 +23,15 @@ onMounted(() => {
 <template>
   <q-card>
     <q-skeleton v-if="!post" />
-    <q-card-section v-else>
-      {{ post.title }}
-      {{ post.createdAt }}
-    </q-card-section>
+    <template v-else>
+      <q-card-section>
+        {{ post.title }}
+        {{ post.createdAt }}
+      </q-card-section>
+      <q-card-section>
+        {{ post.content }}
+      </q-card-section>
+    </template>
     <q-card-actions>
       <q-btn
         to="/list"
