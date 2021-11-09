@@ -6,7 +6,6 @@ import {
   DocumentSnapshot,
   doc,
   collection, query, getDocs,
-  deleteDoc,
   serverTimestamp,
   getDoc,
   writeBatch
@@ -45,10 +44,10 @@ export class Post {
   //   return setDoc(ref, { content }, { merge: true })
   // }
 
-  remove (id: string) {
-    const ref = doc(db, 'posts', id)
-    return deleteDoc(ref)
-  }
+  // remove (id: string) {
+  //   const ref = doc(db, 'posts', id)
+  //   return deleteDoc(ref)
+  // }
 }
 
 const converter: FirestoreDataConverter<Post> = {
@@ -96,13 +95,15 @@ export const setPost = async (title: string, content: string) => {
     userRef
   )
   batch.set(postRef, post)
-
+  const sn = await getContents(id)
+  sn.docs.forEach(d => batch.delete(d.ref))
   contents.forEach((c, i) => {
     const ref = doc(collection(db, 'posts', id, 'contents')).withConverter(contentConverter)
     batch.set(ref, new Content(i, c))
   })
 
-  return await batch.commit()
+  await batch.commit()
+  return id
 }
 const userSnapshots: DocumentSnapshot<User>[] = []
 export const getPosts = async () => {
@@ -129,4 +130,12 @@ export const getPost = async (id: string) => {
   const contents = contentsSnapshot.docs.map(d => d.data().content)
   post.content = contents.join('')
   return post
+}
+
+export const deletePost = async (id: string) => {
+  const batch = writeBatch(db)
+  const sn = await getContents(id)
+  sn.docs.forEach(d => batch.delete(d.ref))
+  batch.delete(doc(db, 'posts', id))
+  return await batch.commit()
 }

@@ -27,6 +27,11 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', component: () => import('pages/Post.vue') }]
   },
   {
+    path: '/post/:id/update',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/Update.vue') }]
+  },
+  {
     path: '/:catchAll(.*)*',
     component: () => import('pages/Error404.vue')
   }
