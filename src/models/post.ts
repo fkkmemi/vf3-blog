@@ -78,7 +78,7 @@ const titleToId = (text: string) => {
 }
 
 const contentsToChunks = (str: string) => {
-  return str.match(/.{1,10}/g) || []
+  return str.match(/.{1,1000}/g) || []
 }
 
 export const setPost = async (title: string, content: string) => {
