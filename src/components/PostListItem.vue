@@ -2,6 +2,7 @@
 import { defineProps, computed, defineEmits } from 'vue'
 import { QueryDocumentSnapshot } from 'firebase/firestore'
 import { Post, deletePost } from 'src/models/post'
+import TuiViewer from './editor/TuiViewer.vue'
 
 const props = defineProps<{
   item: QueryDocumentSnapshot<Post>
@@ -19,7 +20,28 @@ async function remove () {
 
 </script>
 <template>
-  <q-item>
+  <q-card>
+    <q-card-section>{{ post.title }}</q-card-section>
+    <q-card-section>
+      <TuiViewer :content="post.summary" />
+    </q-card-section>
+    <q-card-section>
+      {{ user?.email }}
+      {{ post.createdAt }}
+      {{ post.updatedAt }}
+    </q-card-section>
+    <q-card-actions>
+      <q-btn
+        label="delete"
+        @click="remove"
+      />
+      <q-btn
+        label="go"
+        :to="`/post/${item.id}`"
+      />
+    </q-card-actions>
+  </q-card>
+  <!-- <q-item>
     <q-item-section avatar>
       {{ item.id }}
     </q-item-section>
@@ -53,5 +75,5 @@ async function remove () {
         :to="`/post/${item.id}`"
       />
     </q-item-section>
-  </q-item>
+  </q-item> -->
 </template>

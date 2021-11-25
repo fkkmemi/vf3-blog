@@ -5,27 +5,18 @@ import {
   ref
 } from 'vue'
 import { getPost, Post } from 'src/models/post'
-import { useEditor, EditorContent } from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
+import TuiViewer from './editor/TuiViewer.vue'
 
 const props = defineProps<{
   id: string
 }>()
 
 const post = ref<Post | null>()
-const editor = useEditor({
-  content: '',
-  extensions: [
-    StarterKit
-  ],
-  editable: false
-})
 
 onMounted(() => {
   return getPost(props.id)
     .then(data => {
       post.value = data
-      editor.value.commands.setContent(data.content || '')
     })
 })
 
@@ -41,7 +32,7 @@ onMounted(() => {
       <!-- <q-card-section v-html="post.content" />
        -->
       <q-card-section>
-        <editor-content :editor="editor" />
+        <TuiViewer :content="post.content" />
       </q-card-section>
     </template>
     <q-card-actions>

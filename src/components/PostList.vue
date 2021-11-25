@@ -15,14 +15,26 @@ onMounted(() => getData())
 
 </script>
 <template>
-  <q-list>
+  <!-- <q-list>
     <PostListItem
       v-for="item in items"
       :key="item.id"
       :item="item"
       @refresh="getData"
     />
-  </q-list>
+  </q-list> -->
+  <div class="row q-col-gutter-md">
+    <div
+      v-for="item in items"
+      :key="item.id"
+      class="col-12 col-sm-6 col-md-4 col-lg-3"
+    >
+      <PostListItem
+        :item="item"
+        @refresh="getData"
+      />
+    </div>
+  </div>
 
   <q-page-sticky
     position="bottom-right"

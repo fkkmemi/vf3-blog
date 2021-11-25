@@ -32,7 +32,7 @@ export class Post {
   toJSON () {
     return {
       title: this.title,
-      summary: this.summary.substr(0, 10),
+      summary: this.summary,
       userRef: this.userRef,
       createdAt: this.createdAt || serverTimestamp(),
       updatedAt: this.updatedAt || serverTimestamp()
@@ -61,7 +61,7 @@ const converter: FirestoreDataConverter<Post> = {
     const findUserSnapshot = userSnapshots.find(u => u.id === uid)
     return new Post(
       data.title,
-      data.content,
+      data.summary,
       data.userRef,
       data.createdAt instanceof Timestamp ? data.createdAt.toDate() : undefined,
       data.updatedAt instanceof Timestamp ? data.updatedAt.toDate() : undefined,
@@ -78,7 +78,18 @@ const titleToId = (text: string) => {
 }
 
 const contentsToChunks = (str: string) => {
-  return str.match(/.{1,1000}/g) || []
+  const chunks = []
+  const tmps = []
+  const lines = str.split('\n')
+  for (const line of lines) {
+    tmps.push(line)
+    const joinStr = tmps.join('\n')
+    if (joinStr.length < 1000) continue
+    chunks.push(joinStr)
+    tmps.splice(0, tmps.length)
+  }
+  if (tmps.length) chunks.push(tmps.join('\n'))
+  return chunks
 }
 
 export const setPost = async (title: string, content: string) => {
@@ -86,18 +97,19 @@ export const setPost = async (title: string, content: string) => {
   const batch = writeBatch(db)
   const userRef = doc(db, 'users', firebaseUser.value.uid)
   const id = titleToId(title)
-  const contents = contentsToChunks(content)
+  const chunks = contentsToChunks(content)
+  const summary = content.slice(0, 100) // chunks.splice(0, 1).join('\n')
 
   const postRef = doc(db, 'posts', id).withConverter(converter)
   const post = new Post(
     title,
-    content,
+    summary,
     userRef
   )
   batch.set(postRef, post)
   const sn = await getContents(id)
   sn.docs.forEach(d => batch.delete(d.ref))
-  contents.forEach((c, i) => {
+  chunks.forEach((c, i) => {
     const ref = doc(collection(db, 'posts', id, 'contents')).withConverter(contentConverter)
     batch.set(ref, new Content(i, c))
   })
@@ -128,7 +140,7 @@ export const getPost = async (id: string) => {
   if (!post) throw Error('post not exists')
   const contentsSnapshot = await getContents(id)
   const contents = contentsSnapshot.docs.map(d => d.data().content)
-  post.content = contents.join('')
+  post.content = contents.join('\n')
   return post
 }
 

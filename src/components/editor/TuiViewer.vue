@@ -5,12 +5,16 @@ import '@toast-ui/editor/dist/toastui-editor-viewer.css'
 import {
   ref,
   onMounted,
-  defineProps
+  defineProps,
+  withDefaults
 } from 'vue'
 
 const editorRef = ref()
 const viewer = ref<Viewer | null>()
-const props = defineProps<{ content: string }>()
+const props = withDefaults(
+  defineProps<{ content?: string }>(),
+  { content: '' }
+)
 
 onMounted(() => {
   viewer.value = new Viewer({

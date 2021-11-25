@@ -2,8 +2,9 @@
 import { ref, defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 import { setPost, deletePost } from 'src/models/post'
-import { useEditor, EditorContent } from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
+import TuiEditor from './editor/TuiEditor.vue'
+import { setImage } from 'src/models/image'
+import useStorage from 'src/composables/useStorage'
 
 const props = defineProps<{
   id: string,
@@ -16,12 +17,13 @@ const postContent = ref(props.content)
 
 const existsRule = (val: string) => (val && val.length > 0) || '내용을 쓰세요'
 const router = useRouter()
+const { getURL } = useStorage()
+
 const onSubmit = async () => {
   if (props.id) {
     if (props.title !== postTitle.value) await deletePost(props.id)
   }
-  const html = editor.value.getHTML()
-  const id = await setPost(postTitle.value, html)
+  const id = await setPost(postTitle.value, postContent.value)
   await router.push(`/post/${id}`)
 }
 
@@ -30,16 +32,11 @@ const onReset = () => {
   postContent.value = ''
 }
 
-const editor = useEditor({
-  content: postContent.value,
-  extensions: [
-    StarterKit
-  ]
-})
-
-const test = () => {
-  const r = editor.value.getHTML()
-  console.log(r)
+const addImage = async (blob: Blob | File, callback: (url: string, text?: string) => void) => {
+  console.log('addImage')
+  const id = await setImage(blob as File)
+  const origin = await getURL(`images/${id}/origin`)
+  callback(origin, 'test')
 }
 
 </script>
@@ -59,25 +56,14 @@ const test = () => {
           lazy-rules
           :rules="[ existsRule ]"
         />
-
-        <!-- <q-input
+        <TuiEditor
           v-model="postContent"
-          filled
-          type="textarea"
-          label="내용"
-          hint="내용을 쓰세요"
-          lazy-rules
-          :rules="[ existsRule ]"
-        /> -->
-        <EditorContent :editor="editor" />
+          @add-image="addImage"
+        />
       </q-card-section>
 
       <q-card-actions>
         <q-space />
-        <q-btn
-          label="test"
-          @click="test"
-        />
         <q-btn
           label="Submit"
           type="submit"
