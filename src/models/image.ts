@@ -45,7 +45,7 @@ const converter: FirestoreDataConverter<PostImage> = {
   }
 }
 
-const { uploadFile } = useStorage()
+const { uploadFile, imageCompress } = useStorage()
 
 export const setImage = async (file: File) => {
   if (!firebaseUser.value) throw Error('user not signed')
@@ -54,6 +54,10 @@ export const setImage = async (file: File) => {
   const originPath = `images/${imageRef.id}/origin`
 
   await uploadFile(originPath, file)
+  const thumbnailPath = `images/${imageRef.id}/thumbnail`
+  const thumbnailFile = await imageCompress(file)
+
+  await uploadFile(thumbnailPath, thumbnailFile)
 
   const postImage = new PostImage(file.name, file.size, userRef)
   await setDoc(imageRef, postImage)

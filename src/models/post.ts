@@ -22,6 +22,7 @@ export class Post {
   constructor (
     readonly title: string,
     readonly summary: string,
+    readonly thumbnail: string,
     readonly userRef: DocumentReference,
     readonly createdAt?: Date | undefined,
     readonly updatedAt?: Date,
@@ -33,6 +34,7 @@ export class Post {
     return {
       title: this.title,
       summary: this.summary,
+      thumbnail: this.thumbnail,
       userRef: this.userRef,
       createdAt: this.createdAt || serverTimestamp(),
       updatedAt: this.updatedAt || serverTimestamp()
@@ -62,6 +64,7 @@ const converter: FirestoreDataConverter<Post> = {
     return new Post(
       data.title,
       data.summary,
+      data.thumbnail,
       data.userRef,
       data.createdAt instanceof Timestamp ? data.createdAt.toDate() : undefined,
       data.updatedAt instanceof Timestamp ? data.updatedAt.toDate() : undefined,
@@ -92,18 +95,19 @@ const contentsToChunks = (str: string) => {
   return chunks
 }
 
-export const setPost = async (title: string, content: string) => {
+export const setPost = async (title: string, content: string, summary: string, thumbnail: string) => {
   if (!firebaseUser.value) throw Error('user not signed')
   const batch = writeBatch(db)
   const userRef = doc(db, 'users', firebaseUser.value.uid)
   const id = titleToId(title)
   const chunks = contentsToChunks(content)
-  const summary = content.slice(0, 100) // chunks.splice(0, 1).join('\n')
+  // const summary = content.slice(0, 100) // chunks.splice(0, 1).join('\n')
 
   const postRef = doc(db, 'posts', id).withConverter(converter)
   const post = new Post(
     title,
     summary,
+    thumbnail,
     userRef
   )
   batch.set(postRef, post)

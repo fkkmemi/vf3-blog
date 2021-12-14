@@ -29,7 +29,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/post/:id/update',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/Update.vue') }]
+    children: [{ path: '', component: () => import('pages/Write.vue') }]
   },
   {
     path: '/:catchAll(.*)*',
