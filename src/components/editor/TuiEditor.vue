@@ -6,12 +6,13 @@ import {
   ref,
   onMounted,
   defineProps,
-  defineEmits
+  defineEmits,
+  watch
 } from 'vue'
 
 const editorRef = ref()
 const editor = ref<Editor | null>()
-const props = defineProps<{ modelValue: string }>()
+const props = defineProps<{ modelValue: string, loading: boolean }>()
 const emits = defineEmits<{(e: 'update:modelValue', value: string): void,
   (e: 'addImage', file: File, callback: (url: string, text?: string) => void): void}>()
 
@@ -19,7 +20,14 @@ const add = (blob: Blob | File, callback: (url: string, text?: string) => void) 
   emits('addImage', blob as File, callback)
 }
 
-onMounted(() => {
+watch(() => props.loading, (n: boolean) => {
+  console.log('watch', n)
+  if (editor.value) editor.value.destroy()
+  if (!n) initialize()
+  // editor.value.setMarkdown(n)
+})
+
+const initialize = () => {
   editor.value = new Editor({
     el: editorRef.value as HTMLDivElement,
     height: '500px',
@@ -36,6 +44,10 @@ onMounted(() => {
       addImageBlobHook: add
     }
   })
+}
+
+onMounted(() => {
+  if (!props.loading) initialize()
 })
 
 </script>

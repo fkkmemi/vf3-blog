@@ -15,9 +15,13 @@ const post = ref<Post | null>()
 const title = ref('')
 const content = ref('')
 const thumbnail = ref('')
+const loading = ref(true)
 
 onMounted(() => {
-  if (!props.id) return
+  if (!props.id) {
+    loading.value = false
+    return
+  }
   return getPost(props.id)
     .then(data => {
       console.log(data)
@@ -25,6 +29,7 @@ onMounted(() => {
       title.value = post.value.title
       content.value = post.value.content || ''
       thumbnail.value = post.value.thumbnail
+      loading.value = false
     })
 })
 
@@ -118,9 +123,8 @@ const addImage = async (file: File | Blob, callback: (url: string, text?: string
           :rules="[ existsRule ]"
         />
         <TuiEditor
-          v-if="content"
           v-model="content"
-          :loading="!props.id ? false : !post"
+          :loading="loading"
           @add-image="addImage"
         />
       </q-card-section>

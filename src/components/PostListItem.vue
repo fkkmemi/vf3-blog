@@ -2,7 +2,7 @@
 import { defineProps, computed, defineEmits } from 'vue'
 import { QueryDocumentSnapshot } from 'firebase/firestore'
 import { Post, deletePost } from 'src/models/post'
-import TuiViewer from './editor/TuiViewer.vue'
+// import TuiViewer from './editor/TuiViewer.vue'
 
 const props = defineProps<{
   item: QueryDocumentSnapshot<Post>
@@ -23,7 +23,11 @@ async function remove () {
   <q-card>
     <q-card-section>{{ post.title }}</q-card-section>
     <q-card-section>
-      <TuiViewer :content="post.summary" />
+      <q-img
+        :src="post.thumbnail || 'https://placeimg.com/300/300/any'"
+        style="height: 300px;"
+        fit="cover"
+      />
     </q-card-section>
     <q-card-section>
       {{ user?.email }}
