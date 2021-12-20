@@ -5,6 +5,7 @@ import { setPost, deletePost, Post, getPost } from 'src/models/post'
 import TuiEditor from './editor/TuiEditor.vue'
 import { setImage } from 'src/models/image'
 import useStorage from 'src/composables/useStorage'
+import SelectCategory from './SelectCategory.vue'
 
 const props = defineProps<{
   id: string
@@ -15,6 +16,7 @@ const post = ref<Post | null>()
 const title = ref('')
 const content = ref('')
 const thumbnail = ref('')
+const category = ref('bbb')
 const loading = ref(true)
 
 onMounted(() => {
@@ -122,6 +124,11 @@ const addImage = async (file: File | Blob, callback: (url: string, text?: string
           lazy-rules
           :rules="[ existsRule ]"
         />
+      </q-card-section>
+      <q-card-section>
+        <SelectCategory v-model="category" />
+      </q-card-section>
+      <q-card-section>
         <TuiEditor
           v-model="content"
           :loading="loading"
@@ -154,6 +161,7 @@ const addImage = async (file: File | Blob, callback: (url: string, text?: string
         </div>
       </q-card-section>
       <q-card-section>
+        {{ category }}
         {{ thumbnails }}
       </q-card-section>
 
