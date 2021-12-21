@@ -5,12 +5,10 @@ import {
   get
 } from 'firebase/database'
 
-const categories: string[] = []
 const categoryRef = ref(rtdb, 'site/categories')
 
 export const useDatabase = () => {
-  const setCategory = async (category: string) => {
-    if (!categories.includes(category)) categories.push(category)
+  const setCategories = async (categories: string[]) => {
     await set(categoryRef, categories)
   }
 
@@ -19,7 +17,7 @@ export const useDatabase = () => {
   }
 
   return {
-    setCategory,
+    setCategories,
     getCategories
   }
 }

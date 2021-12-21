@@ -7,32 +7,28 @@ import {
 } from 'vue'
 import { useDatabase } from 'src/composables/useDatabase'
 
-const { setCategory, getCategories } = useDatabase()
+const { setCategories, getCategories } = useDatabase()
 
 const props = defineProps<{ modelValue: string }>()
 const emits = defineEmits<{(e: 'update:modelValue', value: string): void}>()
 const value = ref(props.modelValue)
 const options = ref<string[]>([])
 
-onMounted(() => {
-  getCategories()
-    .then(sn => {
-      options.value = sn.val() as string[] || []
-    })
-    .catch(console.error)
+onMounted(async () => {
+  const sn = await getCategories()
+  options.value = sn.val() as string[] || []
 })
 
-async function createValue (inputValue: string, doneFn: (item?: any, mode?: 'add' | 'add-unique' | 'toggle' | undefined) => void) {
+async function createValue (inputValue: string, doneFn: (item: string, mode: 'add' | 'add-unique' | 'toggle') => void) {
   if (!options.value.includes(inputValue)) {
     options.value.push(inputValue)
-    await setCategory(inputValue)
+    await setCategories(options.value)
   }
   doneFn(inputValue, 'add-unique')
 }
 
 function updateValue (input: string) {
-  console.log(input)
-  emits('update:modelValue', input)
+  emits('update:modelValue', input || '')
 }
 
 </script>
