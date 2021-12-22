@@ -3,7 +3,8 @@ import {
   ref,
   defineProps,
   defineEmits,
-  onMounted
+  onMounted,
+  watch
 } from 'vue'
 import { useDatabase } from 'src/composables/useDatabase'
 
@@ -13,6 +14,10 @@ const props = defineProps<{ modelValue: string }>()
 const emits = defineEmits<{(e: 'update:modelValue', value: string): void}>()
 const value = ref(props.modelValue)
 const options = ref<string[]>([])
+
+watch(() => props.modelValue, (n) => {
+  value.value = n
+})
 
 onMounted(async () => {
   const sn = await getCategories()

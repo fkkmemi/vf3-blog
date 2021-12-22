@@ -6,6 +6,7 @@ import TuiEditor from './editor/TuiEditor.vue'
 import { setImage } from 'src/models/image'
 import useStorage from 'src/composables/useStorage'
 import SelectCategory from './SelectCategory.vue'
+import SelectTags from './SelectTags.vue'
 
 const props = defineProps<{
   id: string
@@ -16,7 +17,8 @@ const post = ref<Post | null>()
 const title = ref('')
 const content = ref('')
 const thumbnail = ref('')
-const category = ref('bbb')
+const category = ref('')
+const tags = ref<string[]>([])
 const loading = ref(true)
 
 onMounted(() => {
@@ -26,11 +28,12 @@ onMounted(() => {
   }
   return getPost(props.id)
     .then(data => {
-      console.log(data)
       post.value = data
       title.value = post.value.title
       content.value = post.value.content || ''
       thumbnail.value = post.value.thumbnail
+      category.value = post.value.category
+      tags.value = post.value.tags
       loading.value = false
     })
 })
@@ -82,18 +85,21 @@ const onSubmit = async () => {
   }
   let t = thumbnail.value
   if (!t && thumbnails.value.length) t = thumbnails.value[0]
-  console.log(t)
   const id = await setPost(
     title.value,
     content.value,
     summary.value,
-    t)
+    t,
+    category.value,
+    tags.value)
   await router.push(`/post/${id}`)
 }
 
 const onReset = () => {
   title.value = ''
   content.value = ''
+  category.value = ''
+  tags.value = []
 }
 const { getURL } = useStorage()
 const addImage = async (file: File | Blob, callback: (url: string, text?: string) => void) => {
@@ -128,6 +134,11 @@ const addImage = async (file: File | Blob, callback: (url: string, text?: string
       <q-card-section>
         <SelectCategory v-model="category" />
       </q-card-section>
+
+      <q-card-section>
+        <SelectTags v-model="tags" />
+        {{ tags }}
+      </q-card-section>
       <q-card-section>
         <TuiEditor
           v-model="content"
@@ -159,10 +170,6 @@ const addImage = async (file: File | Blob, callback: (url: string, text?: string
             </q-card>
           </div>
         </div>
-      </q-card-section>
-      <q-card-section>
-        {{ category }}
-        {{ thumbnails }}
       </q-card-section>
 
       <q-card-actions>

@@ -23,6 +23,8 @@ export class Post {
     readonly title: string,
     readonly summary: string,
     readonly thumbnail: string,
+    readonly category: string,
+    readonly tags: string[],
     readonly userRef: DocumentReference,
     readonly createdAt?: Date | undefined,
     readonly updatedAt?: Date,
@@ -35,6 +37,8 @@ export class Post {
       title: this.title,
       summary: this.summary,
       thumbnail: this.thumbnail,
+      category: this.category,
+      tags: this.tags,
       userRef: this.userRef,
       createdAt: this.createdAt || serverTimestamp(),
       updatedAt: this.updatedAt || serverTimestamp()
@@ -65,6 +69,8 @@ const converter: FirestoreDataConverter<Post> = {
       data.title,
       data.summary,
       data.thumbnail,
+      data.category,
+      data.tags,
       data.userRef,
       data.createdAt instanceof Timestamp ? data.createdAt.toDate() : undefined,
       data.updatedAt instanceof Timestamp ? data.updatedAt.toDate() : undefined,
@@ -95,7 +101,7 @@ const contentsToChunks = (str: string) => {
   return chunks
 }
 
-export const setPost = async (title: string, content: string, summary: string, thumbnail: string) => {
+export const setPost = async (title: string, content: string, summary: string, thumbnail: string, category: string, tags: string[]) => {
   if (!firebaseUser.value) throw Error('user not signed')
   const batch = writeBatch(db)
   const userRef = doc(db, 'users', firebaseUser.value.uid)
@@ -108,6 +114,8 @@ export const setPost = async (title: string, content: string, summary: string, t
     title,
     summary,
     thumbnail,
+    category,
+    tags,
     userRef
   )
   batch.set(postRef, post)
