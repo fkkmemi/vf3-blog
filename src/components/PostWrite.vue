@@ -80,6 +80,7 @@ const summary = computed(() => {
 const existsRule = (val: string) => (val && val.length > 0) || '내용을 쓰세요'
 const router = useRouter()
 const onSubmit = async () => {
+  if (!content.value) throw Error('내용을 쓰세요')
   if (post.value) {
     if (post.value.title !== title.value) await deletePost(props.id)
   }
@@ -132,7 +133,10 @@ const addImage = async (file: File | Blob, callback: (url: string, text?: string
         />
       </q-card-section>
       <q-card-section>
-        <SelectCategory v-model="category" />
+        <SelectCategory
+          v-model="category"
+          :rules="[ existsRule ]"
+        />
       </q-card-section>
 
       <q-card-section>

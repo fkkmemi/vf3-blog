@@ -10,7 +10,7 @@ import { useDatabase } from 'src/composables/useDatabase'
 
 const { setCategories, getCategories } = useDatabase()
 
-const props = defineProps<{ modelValue: string }>()
+const props = defineProps<{ modelValue: string, rules: [(val: string) => boolean | string] }>()
 const emits = defineEmits<{(e: 'update:modelValue', value: string): void}>()
 const value = ref(props.modelValue)
 const options = ref<string[]>([])
@@ -41,6 +41,7 @@ function updateValue (input: string) {
   <q-select
     v-model="value"
     :options="options"
+    :rules="rules"
     label="카테고리"
     filled
     input-debounce="0"
