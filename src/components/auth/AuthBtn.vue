@@ -7,6 +7,7 @@ import {
   signOut
 } from 'firebase/auth'
 import { firebaseUser, useAuth } from 'src/composables/useAuth'
+import { user } from 'src/composables/useFirestore'
 const { initialize } = useAuth()
 initialize()
 
@@ -19,7 +20,7 @@ const provider = new GoogleAuthProvider()
     color="info"
   >
     <q-avatar size="32px">
-      <img :src="firebaseUser.photoURL || ''">
+      <q-img :src="user?.photoURL || ''" />
       <q-menu>
         <q-card>
           <q-list>

@@ -19,7 +19,7 @@ export class User {
   ) { }
 }
 
-const converter: FirestoreDataConverter<User> = {
+export const converter: FirestoreDataConverter<User> = {
   toFirestore (model: User): DocumentData {
     return model
   },
