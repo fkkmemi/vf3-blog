@@ -37,3 +37,4 @@ firebaseConfig.js
 *.log
 .firebaserc
 /firebase-data
+/firebase-export-*
