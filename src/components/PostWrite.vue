@@ -179,6 +179,10 @@ const addImage = async (file: File | Blob, callback: (url: string, text?: string
       <q-card-actions>
         <q-space />
         <q-btn
+          to="/list"
+          label="list"
+        />
+        <q-btn
           label="Submit"
           type="submit"
           color="primary"

@@ -64,7 +64,7 @@ export const useFirestore = () => {
     const userRef = doc(db, 'users', firebaseUser.value.uid)
     const id = titleToId(title)
     const chunks = contentsToChunks(content)
-    const summary = chunks.splice(0, 1).join('\n').slice(300)
+    const summary = chunks.slice(0, 10).join('\n').slice(0, 300)
 
     const postRef = doc(db, 'posts', id).withConverter(postConverter)
     // const post = new Post(
