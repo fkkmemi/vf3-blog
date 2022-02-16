@@ -2,7 +2,10 @@
 import PostListItem from './PostListItem.vue'
 import { QueryDocumentSnapshot } from 'firebase/firestore'
 import { onMounted, ref } from 'vue'
-import { Post, getPosts } from 'src/models/post'
+import { Post } from 'src/models/post'
+import { useFirestore } from 'src/composables/useFirestore'
+
+const { getPosts } = useFirestore()
 
 const items = ref<QueryDocumentSnapshot<Post>[]>([])
 

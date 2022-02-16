@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { defineProps, computed, defineEmits } from 'vue'
 import { QueryDocumentSnapshot } from 'firebase/firestore'
-import { Post, deletePost } from 'src/models/post'
+import { Post } from 'src/models/post'
+import { useFirestore } from 'src/composables/useFirestore'
 // import TuiViewer from './editor/TuiViewer.vue'
+
+const { deletePost } = useFirestore()
 
 const props = defineProps<{
   item: QueryDocumentSnapshot<Post>
@@ -11,7 +14,7 @@ const props = defineProps<{
 const emit = defineEmits<{(e: 'refresh'): void}>()
 
 const post = computed(() => props.item.data())
-const user = computed(() => post.value.userSnapshot?.data())
+// const user = computed(() => post.value.userSnapshot?.data())
 
 async function remove () {
   await deletePost(props.item.id)
@@ -30,7 +33,7 @@ async function remove () {
       />
     </q-card-section>
     <q-card-section>
-      {{ user?.email }}
+      <!-- {{ user?.email }} -->
       {{ post.createdAt }}
       {{ post.updatedAt }}
     </q-card-section>

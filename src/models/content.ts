@@ -1,11 +1,6 @@
 import {
-  FirestoreDataConverter,
-  collection,
-  getDocs,
-  query,
-  orderBy
+  FirestoreDataConverter
 } from 'firebase/firestore'
-import { db } from 'boot/firebase'
 
 export class Content {
   constructor (
@@ -21,7 +16,7 @@ export class Content {
   }
 }
 
-export const converter: FirestoreDataConverter<Content> = {
+export const contentConverter: FirestoreDataConverter<Content> = {
   toFirestore (model: Content) {
     return model.toJSON()
   },
@@ -32,10 +27,4 @@ export const converter: FirestoreDataConverter<Content> = {
       data.content
     )
   }
-}
-
-export const getContents = async (id: string) => {
-  const ref = collection(db, 'posts', id, 'contents').withConverter(converter)
-  const q = query(ref, orderBy('no'))
-  return await getDocs(q)
 }

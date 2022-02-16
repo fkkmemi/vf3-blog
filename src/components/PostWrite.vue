@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref, defineProps, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { setPost, deletePost, Post, getPost } from 'src/models/post'
+import { Post } from 'src/models/post'
 import TuiEditor from './editor/TuiEditor.vue'
 import { setImage } from 'src/models/image'
 import useStorage from 'src/composables/useStorage'
 import SelectCategory from './SelectCategory.vue'
 import SelectTags from './SelectTags.vue'
+import { useFirestore } from 'src/composables/useFirestore'
 
+const { setPost, getPost, deletePost, getContentString } = useFirestore()
 const props = defineProps<{
   id: string
 }>()
@@ -21,21 +23,24 @@ const category = ref('')
 const tags = ref<string[]>([])
 const loading = ref(true)
 
-onMounted(() => {
+onMounted(async () => {
   if (!props.id) {
     loading.value = false
     return
   }
-  return getPost(props.id)
-    .then(data => {
-      post.value = data
-      title.value = post.value.title
-      content.value = post.value.content || ''
-      thumbnail.value = post.value.thumbnail
-      category.value = post.value.category
-      tags.value = post.value.tags
-      loading.value = false
-    })
+  const doc = await getPost(props.id)
+  post.value = doc.data()
+  if (!post.value) {
+    loading.value = false
+    return
+  }
+  title.value = post.value.title
+  content.value = await getContentString(props.id)
+  thumbnail.value = post.value.thumbnail
+  category.value = post.value.category
+  tags.value = post.value.tags
+
+  loading.value = false
 })
 
 const thumbnails = computed(() => {
@@ -73,10 +78,6 @@ const thumbnails = computed(() => {
   return urls
 })
 
-const summary = computed(() => {
-  return content.value.slice(0, 100)
-})
-
 const existsRule = (val: string) => (val && val.length > 0) || '내용을 쓰세요'
 const router = useRouter()
 const onSubmit = async () => {
@@ -89,10 +90,10 @@ const onSubmit = async () => {
   const id = await setPost(
     title.value,
     content.value,
-    summary.value,
     t,
     category.value,
-    tags.value)
+    tags.value,
+    !!props.id)
   await router.push(`/post/${id}`)
 }
 
@@ -104,7 +105,6 @@ const onReset = () => {
 }
 const { getURL } = useStorage()
 const addImage = async (file: File | Blob, callback: (url: string, text?: string) => void) => {
-  console.log('add')
   const id = await setImage(file as File)
   const origin = await getURL(`images/${id}/origin`)
   const thumbnail = await getURL(`images/${id}/thumbnail`)
