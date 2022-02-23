@@ -11,8 +11,17 @@
     "dev": "quasar dev",
     "build": "quasar build",
     "build:pwa": "quasar build -m pwa",
+    "build:fn": "cd functions && yarn build",
     "emul": "firebase emulators:start --import=./firebase-data --export-on-exit",
-    "watch": "cd functions && yarn watch"
+    "watch": "cd functions && yarn watch",
+    "predeploy": "yarn build",
+    "predeploy:hs": "yarn build",
+    "deploy": "firebase deploy",
+    "deploy:db": "firebase deploy --only database",
+    "deploy:fn": "firebase deploy --only functions",
+    "deploy:fs": "firebase deploy --only firestore",
+    "deploy:hs": "firebase deploy --only hosting",
+    "deploy:st": "firebase deploy --only storage"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
@@ -38,7 +47,9 @@
     "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-vue": "^7.0.0"
+    "eslint-plugin-vue": "^7.0.0",
+    "@types/webpack": "^5.28.0",
+    "@types/webpack-dev-server": "^4.7.2"
   },
   "browserslist": [
     "last 10 Chrome versions",
