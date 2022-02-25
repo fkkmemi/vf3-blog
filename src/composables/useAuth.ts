@@ -6,12 +6,14 @@ import {
 } from 'firebase/auth'
 import { useDatabase } from 'src/composables/useDatabase'
 import { useFirestore } from 'src/composables/useFirestore'
+import { useMessaging } from './useMessaging'
 
 export const firebaseUser = ref<User | null>(null)
 export const isSigned = computed(() => firebaseUser.value !== null)
 
 const { onChangeStatus, offChangeStatus } = useDatabase()
 const { onSnapshotUser, offSnapshotUser } = useFirestore()
+const { setToken } = useMessaging()
 
 export const useAuth = () => {
   const initialize = () => {
@@ -24,6 +26,7 @@ export const useAuth = () => {
         offSnapshotUser()
       }
       firebaseUser.value = user
+      setToken().catch(console.error)
     })
   }
   return { initialize }

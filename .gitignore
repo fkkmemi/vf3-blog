@@ -38,3 +38,7 @@ firebaseConfig.js
 .firebaserc
 /firebase-data
 /firebase-export-*
+/public/firebase-messaging-sw.js
+
+# custom
+.env
